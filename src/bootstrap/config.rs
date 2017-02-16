@@ -72,6 +72,7 @@ pub struct Config {
     pub rustc_default_ar: Option<String>,
     pub rust_optimize_tests: bool,
     pub rust_debuginfo_tests: bool,
+    pub rust_dist_src: bool,
 
     pub build: String,
     pub host: Vec<String>,
@@ -183,6 +184,7 @@ struct Dist {
     sign_folder: Option<String>,
     gpg_password_file: Option<String>,
     upload_addr: Option<String>,
+    src_tarball: Option<bool>,
 }
 
 #[derive(RustcDecodable)]
@@ -380,6 +382,7 @@ impl Config {
             config.dist_sign_folder = t.sign_folder.clone().map(PathBuf::from);
             config.dist_gpg_password_file = t.gpg_password_file.clone().map(PathBuf::from);
             config.dist_upload_addr = t.upload_addr.clone();
+            set(&mut config.rust_dist_src, t.src_tarball);
         }
 
         return config
@@ -448,6 +451,7 @@ impl Config {
                 ("FULL_BOOTSTRAP", self.full_bootstrap),
                 ("EXTENDED", self.extended),
                 ("SANITIZERS", self.sanitizers),
+                ("DIST_SRC", self.rust_dist_src),
             }
 
             match key {
